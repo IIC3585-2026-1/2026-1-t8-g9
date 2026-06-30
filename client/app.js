@@ -2,10 +2,14 @@ const socket = io();
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
 const clearButton = document.getElementById("clear-button");
+const colorPicker = document.getElementById("color-picker");
+const brushSizeInput = document.getElementById("brush-size");
+const brushSizeValue = document.getElementById("brush-size-value");
 
 let drawing = false;
 let previousX = 0;
 let previousY = 0;
+let currentLineWidth = 3;
 
 function getCanvasPosition(event) {
   const bounds = canvas.getBoundingClientRect();
@@ -30,8 +34,10 @@ function drawSegment(stroke) {
   context.beginPath();
   context.moveTo(stroke.x0, stroke.y0);
   context.lineTo(stroke.x1, stroke.y1);
-  context.strokeStyle = "black";
-  context.lineWidth = 3;
+  context.strokeStyle = stroke.color || "#000000";
+  context.lineWidth = stroke.lineWidth || 3;
+  context.lineCap = "round";
+  context.lineJoin = "round";
   context.stroke();
 }
 
@@ -52,7 +58,9 @@ canvas.addEventListener("mousemove", (event) => {
     x0: previousX,
     y0: previousY,
     x1: position.x,
-    y1: position.y
+    y1: position.y,
+    color: colorPicker.value,
+    lineWidth: currentLineWidth
   };
 
   drawSegment(stroke);
@@ -103,7 +111,9 @@ canvas.addEventListener("touchmove", (event) => {
     x0: previousX,
     y0: previousY,
     x1: position.x,
-    y1: position.y
+    y1: position.y,
+    color: colorPicker.value,
+    lineWidth: currentLineWidth
   };
 
   drawSegment(stroke);
@@ -125,4 +135,9 @@ canvas.addEventListener("touchcancel", (event) => {
 
 window.addEventListener("mouseup", () => {
   drawing = false;
+});
+
+brushSizeInput.addEventListener("input", () => {
+  currentLineWidth = Number(brushSizeInput.value);
+  brushSizeValue.textContent = currentLineWidth;
 });
