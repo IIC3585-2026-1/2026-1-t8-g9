@@ -5,6 +5,7 @@ const clearButton = document.getElementById("clear-button");
 const colorPicker = document.getElementById("color-picker");
 const brushSizeInput = document.getElementById("brush-size");
 const brushSizeValue = document.getElementById("brush-size-value");
+const colorButtons = document.querySelectorAll(".color-btn");
 
 let drawing = false;
 let previousX = 0;
@@ -140,4 +141,11 @@ window.addEventListener("mouseup", () => {
 brushSizeInput.addEventListener("input", () => {
   currentLineWidth = Number(brushSizeInput.value);
   brushSizeValue.textContent = currentLineWidth;
+});
+
+colorButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    currentColor = button.dataset.color;
+    colorPicker.value = currentColor;
+  });
 });

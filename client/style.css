@@ -42,3 +42,21 @@ button {
   padding: 8px 16px;
   cursor: pointer;
 }
+
+.color-palette {
+  display: flex;
+  gap: 6px;
+}
+
+.color-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #999999;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+}
+
+.color-btn:hover {
+  transform: scale(1.1);
+}
