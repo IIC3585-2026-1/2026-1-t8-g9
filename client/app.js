@@ -16,6 +16,16 @@ function getCanvasPosition(event) {
   };
 }
 
+function getTouchCanvasPosition(event) {
+  const touch = event.touches[0];
+  const bounds = canvas.getBoundingClientRect();
+
+  return {
+    x: (touch.clientX - bounds.left) * (canvas.width / bounds.width),
+    y: (touch.clientY - bounds.top) * (canvas.height / bounds.height)
+  };
+}
+
 function drawSegment(stroke) {
   context.beginPath();
   context.moveTo(stroke.x0, stroke.y0);
@@ -70,4 +80,49 @@ clearButton.addEventListener("click", () => {
 
 socket.on("clear-canvas", () => {
   context.clearRect(0, 0, canvas.width, canvas.height);
+});
+
+canvas.addEventListener("touchstart", (event) => {
+  event.preventDefault();
+
+  const position = getTouchCanvasPosition(event);
+
+  drawing = true;
+  previousX = position.x;
+  previousY = position.y;
+});
+
+canvas.addEventListener("touchmove", (event) => {
+  event.preventDefault();
+
+  if (!drawing) return;
+
+  const position = getTouchCanvasPosition(event);
+
+  const stroke = {
+    x0: previousX,
+    y0: previousY,
+    x1: position.x,
+    y1: position.y
+  };
+
+  drawSegment(stroke);
+  socket.emit("draw", stroke);
+
+  previousX = position.x;
+  previousY = position.y;
+});
+
+canvas.addEventListener("touchend", (event) => {
+  event.preventDefault();
+  drawing = false;
+});
+
+canvas.addEventListener("touchcancel", (event) => {
+  event.preventDefault();
+  drawing = false;
+});
+
+window.addEventListener("mouseup", () => {
+  drawing = false;
 });

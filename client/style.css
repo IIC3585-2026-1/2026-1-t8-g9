@@ -26,6 +26,7 @@ canvas {
   height: auto;
   background: white;
   border: 1px solid #333;
+  touch-action: none;
 }
 
 button {
